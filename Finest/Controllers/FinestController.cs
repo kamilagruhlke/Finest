@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Finest.Controllers
 {
@@ -17,7 +18,7 @@ namespace Finest.Controllers
         // GET: FinestController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return View(finest.FirstOrDefault( x => x.Id == id));
         }
 
         public ActionResult Create()
