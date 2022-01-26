@@ -13,6 +13,7 @@ namespace Finest.Models
         public string Description { get; set; }
         [DisplayName("Data realizacji")]
         public DateTime Date { get; set; }
+        [DisplayName("Zadanie ukończone")]
         public bool Completed { get; set; }
     }
 }

@@ -1,80 +1,70 @@
 ﻿using Finest.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Finest.Controllers
 {
     public class FinestController : Controller
     {
-        private static IList<FinestModel> finest = new List<FinestModel>();
-        public ActionResult Index()
+        private static IList<FinestModel> finests = new List<FinestModel>();
+        public IActionResult Index(CancellationToken cancellationToken)
         {
-            return View(finest);
+            return View(finests);
         }
 
-        // GET: FinestController/Details/5
-        public ActionResult Details(int id)
+        public IActionResult Details(int id, CancellationToken cancellationToken)
         {
-            return View(finest.FirstOrDefault( x => x.Id == id));
+            return View(finests.FirstOrDefault( x => x.Id == id));
         }
 
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View(new FinestModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(FinestModel finestModel, IFormCollection collection)
+        public IActionResult Create(FinestModel finestModel, CancellationToken cancellationToken)
         {
-            finestModel.Id = finest.Count + 1;
-            finest.Add(finestModel);
+            finestModel.Id = finests.Count + 1;
+            finests.Add(finestModel);
+
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: FinestController/Edit/5
-        public ActionResult Edit(int id)
+        public IActionResult Edit(int id, CancellationToken cancellationToken)
         {
-            return View();
+            return View(finests.FirstOrDefault(x => x.Id == id));
         }
 
-        // POST: FinestController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult Edit(int id, FinestModel finestModel, CancellationToken cancellationToken)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            FinestModel finest = finests.FirstOrDefault(x => x.Id == id);
+            finest.Name = finestModel.Name;
+            finest.Description = finestModel.Description;
+            finest.Date = finestModel.Date;
+            finest.Completed = finestModel.Completed;
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: FinestController/Delete/5
-        public ActionResult Delete(int id)
+        public IActionResult Delete(int id, CancellationToken cancellationToken)
         {
-            return View();
+            return View(finests.FirstOrDefault(x => x.Id == id));
         }
 
-        // POST: FinestController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public IActionResult Delete(int id, FinestModel finestModel, CancellationToken cancellationToken)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            FinestModel finest = finests.FirstOrDefault(x => x.Id == id);
+            finests.Remove(finest);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
