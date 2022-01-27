@@ -10,12 +10,12 @@ namespace Finest.Services
 
         public IList<FinestModel> GetAll()
         {
-            return finests;
+            return finests.Where(e => e.Completed == false).ToList();
         }
 
         public IList<FinestModel> GetAllCompleted()
         {
-            return finests.Where(e => e.Completed == true).ToList();
+            return finests.Where(e => e.Completed).ToList();
         }
 
         public FinestModel Details(int id)
