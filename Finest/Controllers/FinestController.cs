@@ -1,22 +1,27 @@
 ﻿using Finest.Models;
+using Finest.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace Finest.Controllers
 {
     public class FinestController : Controller
     {
-        private static IList<FinestModel> finests = new List<FinestModel>();
+        private readonly FinestService finestService;
+
+        public FinestController(FinestService finestService)
+        {
+            this.finestService = finestService;
+        }
+
         public IActionResult Index(CancellationToken cancellationToken)
         {
-            return View(finests);
+            return View(finestService.GetAll());
         }
 
         public IActionResult Details(int id, CancellationToken cancellationToken)
         {
-            return View(finests.FirstOrDefault( x => x.Id == id));
+            return View(finestService.Details(id));
         }
 
         public IActionResult Create()
@@ -28,41 +33,35 @@ namespace Finest.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(FinestModel finestModel, CancellationToken cancellationToken)
         {
-            finestModel.Id = finests.Count + 1;
-            finests.Add(finestModel);
+            finestService.Create(finestModel);
 
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Edit(int id, CancellationToken cancellationToken)
         {
-            return View(finests.FirstOrDefault(x => x.Id == id));
+            return View(finestService.Details(id));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, FinestModel finestModel, CancellationToken cancellationToken)
         {
-            FinestModel finest = finests.FirstOrDefault(x => x.Id == id);
-            finest.Name = finestModel.Name;
-            finest.Description = finestModel.Description;
-            finest.Date = finestModel.Date;
-            finest.Completed = finestModel.Completed;
+            finestService.Edit(id, finestModel);
 
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Delete(int id, CancellationToken cancellationToken)
         {
-            return View(finests.FirstOrDefault(x => x.Id == id));
+            return View(finestService.Details(id));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, FinestModel finestModel, CancellationToken cancellationToken)
+        public IActionResult Delete(FinestModel finest, CancellationToken cancellationToken)
         {
-            FinestModel finest = finests.FirstOrDefault(x => x.Id == id);
-            finests.Remove(finest);
+            finestService.Delete(finest.Id);
 
             return RedirectToAction(nameof(Index));
         }
