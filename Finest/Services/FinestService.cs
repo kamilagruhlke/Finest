@@ -6,42 +6,54 @@ namespace Finest.Services
 {
     public class FinestService
     {
-        private static IList<FinestModel> finests = new List<FinestModel>();
+        private readonly FinestContext context;
+
+        public FinestService(FinestContext context)
+        {
+            this.context = context;
+        }
 
         public IList<FinestModel> GetAll()
         {
-            return finests.Where(e => e.Completed == false).ToList();
+            return this.context.Finest.Where(e => e.Completed == false).ToList();
         }
 
         public IList<FinestModel> GetAllCompleted()
         {
-            return finests.Where(e => e.Completed).ToList();
+            return this.context.Finest.Where(e => e.Completed).ToList();
         }
 
         public FinestModel Details(int id)
         {
-            return finests.FirstOrDefault(x => x.Id == id);
+            return this.context.Finest.FirstOrDefault(x => x.Id == id);
         }
 
         public void Create(FinestModel finestModel)
         {
-            finestModel.Id = finests.Count + 1;
-            finests.Add(finestModel);
+            this.context.Finest.Add(finestModel);
+
+            this.context.SaveChanges();
+
         }
 
         public void Edit(int id, FinestModel finestModel)
         {
-            FinestModel finest = finests.FirstOrDefault(x => x.Id == id);
+            FinestModel finest = this.context.Finest.FirstOrDefault(x => x.Id == id);
             finest.Name = finestModel.Name;
             finest.Description = finestModel.Description;
             finest.Date = finestModel.Date;
             finest.Completed = finestModel.Completed;
+
+            this.context.SaveChanges();
+
         }
 
         public void Delete(int id)
         {
-            FinestModel finest = finests.FirstOrDefault(x => x.Id == id);
-            finests.Remove(finest);
+            FinestModel finest = this.context.Finest.FirstOrDefault(x => x.Id == id);
+            this.context.Finest.Remove(finest);
+
+            this.context.SaveChanges();
         }
     }
 }
