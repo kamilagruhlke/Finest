@@ -1,14 +1,11 @@
+using Finest.Models;
 using Finest.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Finest
 {
@@ -23,9 +20,11 @@ namespace Finest
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton<FinestService>();
+        { 
             services.AddControllersWithViews();
+            services.AddDbContext<FinestContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("FinestDatabase")));
+            services.AddScoped<FinestService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
