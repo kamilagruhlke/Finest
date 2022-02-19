@@ -5,31 +5,29 @@ export class FetchData extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { forecasts: [], loading: true };
+    this.state = { finests: [], loading: true };
   }
 
-  componentDidMount() {
-    this.populateWeatherData();
+    componentDidMount() {
+        this.getDataFromApi();
   }
 
-  static renderForecastsTable(forecasts) {
+    static renderTable(finests) {
     return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
           </tr>
         </thead>
         <tbody>
-          {forecasts.map(forecast =>
-            <tr key={forecast.date}>
-              <td>{forecast.date}</td>
-              <td>{forecast.temperatureC}</td>
-              <td>{forecast.temperatureF}</td>
-              <td>{forecast.summary}</td>
+                {finests.map(e =>
+                    <tr key={e.id}>
+                        <td>{e.id}</td>
+              <td>{e.name}</td>
+              <td>{e.description}</td>
             </tr>
           )}
         </tbody>
@@ -40,20 +38,20 @@ export class FetchData extends Component {
   render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : FetchData.renderForecastsTable(this.state.forecasts);
+        : FetchData.renderTable(this.state.finests);
 
     return (
       <div>
-        <h1 id="tabelLabel" >Weather forecast</h1>
-        <p>This component demonstrates fetching data from the server.</p>
-        {contents}
+            <h1 id="tabelLabel" >finests</h1>
+            <p>This component demonstrates fetching data from the server.</p>
+            {contents}
       </div>
     );
   }
 
-  async populateWeatherData() {
-    const response = await fetch('weatherforecast');
+  async getDataFromApi() {
+    const response = await fetch('api/Finest');
     const data = await response.json();
-    this.setState({ forecasts: data, loading: false });
+    this.setState({ finests: data, loading: false });
   }
 }
